@@ -14,7 +14,7 @@ namespace CadastroUsuario.Core.Domain.Cadastro
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public DateTime DateInserted { get; set; }
     }
 }

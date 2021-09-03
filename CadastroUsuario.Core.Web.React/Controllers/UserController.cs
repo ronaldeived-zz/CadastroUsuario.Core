@@ -30,7 +30,7 @@ namespace CadastroUsuario.Core.Web.React.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace CadastroUsuario.Core.Web.React.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.Id)
             {
@@ -83,7 +83,7 @@ namespace CadastroUsuario.Core.Web.React.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 if (UserExists(user.Id))
                 {
@@ -100,7 +100,7 @@ namespace CadastroUsuario.Core.Web.React.Controllers
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -114,7 +114,7 @@ namespace CadastroUsuario.Core.Web.React.Controllers
             return NoContent();
         }
 
-        private bool UserExists(Guid id)
+        private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
         }

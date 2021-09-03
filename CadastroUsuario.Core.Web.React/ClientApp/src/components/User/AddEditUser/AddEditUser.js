@@ -1,146 +1,80 @@
-﻿import React from 'react';
-import axios from 'axios';
-import '../AddUser.css'
-import { Container, Col, Form, Row, FormGroup, Label, Input, Button } from 'reactstrap';
-class AddUser extends React.Component {
+﻿import React, { Component } from 'react';
+import './AddEditUser.css';
+
+export class User {
+}
+
+export class AddEditUser extends Component {
     constructor(props) {
-        super(props)
-        this.state = {
-            FirstName: '',
-            SecondName: '',
-            Birth: '',
-            Cpf: '',
-            Rg: '',
-            PostalCode: '',
-            Street: '',
-            District: '',
-            Complement: '',
-            HouseNumber: '',
-            Phone: '',
-            SocialMidias: ''
-        }
-    }
-    Addstudent = () => {
-        axios.post('http://localhost:52564/api/User/PostUser/', {
-            Name: this.state.Name, RollNo: this.state.RollNo,
-            Class: this.state.Class, Address: this.state.Address
-        })
-            .then(json => {
-                if (json.data.Status === 'Success') {
-                    console.log(json.data.Status);
-                    alert("Data Save Successfully");
-                    this.props.history.push('/Studentlist')
-                }
-                else {
-                    alert('Data not Saved');
-                    debugger;
-                    this.props.history.push('/Studentlist')
-                }
-            })
+        super(props);
+        this.state = { title: "", user: new User(), loading: true };
+        this.inicialize();
+        this.handleCancel.bind(this);
+        this.handleSave.bind(this);
     }
 
-    handleChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value });
+    async inicialize() {
+        const id = this.props.match.params["id"];
+
+        if (id != null) {
+            const response = await fetch('api/User/' + id);
+            const data = await response.json();
+            this.setState({ title: "Edit", user: data, loading: false });
+        }
+        else {
+            this.state = { title: "Create", users: new User(), loading: false }
+        }
     }
 
     render() {
+        let contents = this.state.loading
+            ? <p><em> Carregando...</em></p>
+            : this.renderCreateForm();
+
         return (
-            <Container className="App">
-                <h4 className="PageHeading">Enter User Informations</h4>
-                <Form className="form">
-                    <Col>
-                        <FormGroup row>
-                            <Label for="name" sm={2}>Name</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Name" onChange={this.handleChange} value={this.state.FirstName} placeholder="Enter Name" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="address" sm={2}>RollNo</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="RollNo" onChange={this.handleChange} value={this.state.SecondName} placeholder="Enter RollNo" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Class</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Class" onChange={this.handleChange} value={this.state.Birth} placeholder="Enter Class" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.Cpf} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.Rg} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.PostalCode} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.Street} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.District} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.Complement} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.HouseNumber} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.Phone} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="Password" sm={2}>Address</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="Address" onChange={this.handleChange} value={this.state.SocialMidias} placeholder="Enter Address" />
-                            </Col>
-                        </FormGroup>
-                    </Col>
-                    <Col>
-                        <FormGroup row>
-                            <Col sm={5}>
-                            </Col>
-                            <Col sm={1}>
-                                <button type="button" onClick={this.Addstudent} className="btn btn-success">Submit</button>
-                            </Col>
-                            <Col sm={1}>
-                                <Button color="danger">Cancel</Button>{' '}
-                            </Col>
-                            <Col sm={5}>
-                            </Col>
-                        </FormGroup>
-                    </Col>
-                </Form>
-            </Container>
+            <div>
+                <h1>{this.state.title}</h1>
+                <h3>Users</h3>
+                {contents}
+            </div>
         );
     }
 
-}
+    handleCancel(event) {
+        event.preventDefault();
+        this.props.history.push("/ListUsers");
+    }
 
-export default AddUser;
+    handleSave(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        console.log(data);
+        //if (this.state.User.id > 0) {
+        //    const response1 = fetch('api/User/' + this.state.user.id, { method: "PUT", body: data });
+        //    this.props.history.push('/ListUsers');
+        //}
+        //else {
+        //    const response2 = fetch('api/User/' , { method: "POST", body: data });
+        //    this.props.history.push('/ListUsers');
+        //}
+    }
+
+    renderCreateForm() {
+        return (
+            <>
+                <h4 className="PageHeading">Enter User Informations</h4>
+                {
+                    this.state.loading ? <p>Carregando</p> : (
+                        <>
+                            <form onSubmit={this.handleSave}>
+                                <input name="zequinho" defaultValue={this.state.user.firstName} placeholder="First Name" />
+                                <input name="outrocampo" defaultValue={this.state.user.secondName} placeholder="Second Name" />
+                                <button>Save</button>
+                            </form>
+                        </>
+                    )
+                }
+            </>
+            );
+    }
+}
